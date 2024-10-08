@@ -1,0 +1,42 @@
+name: Component-based Checks
+
+on:
+    pull_request:
+        branches:
+        - main
+
+jobs:
+    go_service_checks:
+        if: contains(github.event.pull_request.changed_files, 'technician-service/**') || contains(github.event.pull_request.changed_files, 'available-technician-service/**')
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v2
+
+            - name: Set up Go
+              uses: actions/setup-go@v3
+              with:
+                go-version: '1.20'
+                
+            - name: Run Go tests
+              run: |
+                cd go-service-directory
+                go test ./...
+
+    java_service_checks:
+        if: contains(github.event.pull_request.changed_files, 'user-service/**')
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v2
+            
+            - name: Set up JDK
+              uses: actions/setup-java@v3
+              with:
+                distribution: 'temurin'
+                java-version: '17' 
+                
+            - name: Run Java checks
+              run: |
+                cd java-service-directory
+                mvn test
