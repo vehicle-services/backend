@@ -7,7 +7,6 @@ on:
 
 jobs:
   go_service_checks:
-    if: contains(github.event.pull_request.changed_files, 'technician-service/**')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -24,7 +23,6 @@ jobs:
           go test ./...
   
   go_service_checks2:
-    if: contains(github.event.pull_request.changed_files, 'available-technician-service/**')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -39,7 +37,6 @@ jobs:
           go test ./...     
   
   java_service_checks:
-    if: contains(github.event.pull_request.changed_files, 'user-service/**')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
