@@ -1,1 +1,1 @@
-To be written in Golang
+Written in Golang
