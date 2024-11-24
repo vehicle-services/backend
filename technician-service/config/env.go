@@ -20,7 +20,7 @@ func initConfig() Config {
 	return Config{
 		Port:       getEnv("PORT", "5432"),
 		DBUser:     getEnv("DB_USER", "postgres"),
-		DBPassword: getEnv("DB_PASSWORD", ""),
+		DBPassword: getEnv("DB_PASSWORD", "postgres123"),
 		DBHost:     getEnv("DB_HOST", "localhost"),
 		DBName:     getEnv("DB_NAME", "mechanix"),
 	}

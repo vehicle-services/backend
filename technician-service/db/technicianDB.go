@@ -42,6 +42,42 @@ func GetTechnician(db *sql.DB, technician config.Technician) (config.Technician,
 	return *newTechnician, nil
 }
 
+func GetRequests(db *sql.DB, technician config.Technician) ([]config.ServiceRequest, error) {
+	row, err := db.Query("SELECT service_requestuuid, date, model_name, request_type, service_description, service_type, ST_X(location::geometry) AS long, ST_Y(location::geometry) AS lat, status, time, user_email, vehicle_type FROM service_request WHERE assigned_technician = $1", technician.Username)
+	requests := []config.ServiceRequest{}
+	for row.Next() {
+		request := &config.ServiceRequest{}
+		err := row.Scan(&request.RequestID, &request.Date, &request.Model_name, &request.RequestType, &request.ServiceDescription, &request.ServiceType, &request.Longitude, &request.Latitude, &request.Status, &request.Time, &request.UserID, &request.VehicleType)
+		if err != nil {
+			return nil, fmt.Errorf("error scanning requests row: %v", err)
+		}
+		requests = append(requests, *request)
+	}
+	if err != nil {
+		fmt.Println(err)
+		return requests, fmt.Errorf("error fetching technician%v", err)
+	}
+	return requests, nil
+}
+
+func GetActiveRequests(db *sql.DB, technician config.Technician) ([]config.ServiceRequest, error) {
+	row, err := db.Query("SELECT service_requestuuid, date, model_name, request_type, service_description, service_type, ST_X(location::geometry) AS long, ST_Y(location::geometry) AS lat, status, time, user_email, vehicle_type FROM service_request WHERE service_requestuuid IN (SELECT requestid FROM temp WHERE technician = $1)", technician.Username)
+	requests := []config.ServiceRequest{}
+	for row.Next() {
+		request := &config.ServiceRequest{}
+		err := row.Scan(&request.RequestID, &request.Date, &request.Model_name, &request.RequestType, &request.ServiceDescription, &request.ServiceType, &request.Longitude, &request.Latitude, &request.Status, &request.Time, &request.UserID, &request.VehicleType)
+		if err != nil {
+			return nil, fmt.Errorf("error scanning requests row: %v", err)
+		}
+		requests = append(requests, *request)
+	}
+	if err != nil {
+		fmt.Println(err)
+		return requests, fmt.Errorf("error fetching technician%v", err)
+	}
+	return requests, nil
+}
+
 func GetTechniciansLocation(db *sql.DB, request config.ServiceRequest) ([]config.AvailableTechnicians, error) {
 	rows, err := db.Query(`
 		SELECT username, shop_name, mobile_no, shop_desc, currently_open,

@@ -26,8 +26,10 @@ func (h *Handler) RegisterRoutes(router *mux.Router) {
 	router.HandleFunc("/availabletechnicians", h.AvailableTechnicians).Methods("POST")
 	router.HandleFunc("/serviceRequest", h.ServiceRequest).Methods("POST")
 	router.HandleFunc("/scheduleRequest", h.ServiceRequestSchedule).Methods("POST")
-	router.HandleFunc("/requests", h.GetServiceRequests).Methods("POST")
+	router.HandleFunc("/previousRequests", h.GetServiceRequests).Methods("POST")
+	router.HandleFunc("/currentRequests", h.GetActiveServiceRequests).Methods("POST")
 	router.HandleFunc("/requestStatus", h.UpdateRequestStatus).Methods("PATCH")
+	router.HandleFunc("/deleteRequest", h.DeleteRequest).Methods("POST")
 }
 
 func (h *Handler) version(w http.ResponseWriter, r *http.Request) {
@@ -68,9 +70,17 @@ func (h *Handler) ServiceRequestSchedule(w http.ResponseWriter, r *http.Request)
 }
 
 func (h *Handler) GetServiceRequests(w http.ResponseWriter, r *http.Request) {
-	request.GetServiceRequests(w, r)
+	techService.GetServiceRequests(w, r)
+}
+
+func (h *Handler) GetActiveServiceRequests(w http.ResponseWriter, r *http.Request) {
+	techService.GetActiveServiceRequests(w, r)
 }
 
 func (h *Handler) UpdateRequestStatus(w http.ResponseWriter, r *http.Request) {
 	request.UpdateRequestStatus(w, r)
+}
+
+func (h *Handler) DeleteRequest(w http.ResponseWriter, r *http.Request) {
+	request.DeleteRequest(w, r)
 }

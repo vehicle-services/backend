@@ -35,6 +35,16 @@ func writeResponse(technician config.Technician, w http.ResponseWriter) {
 	w.Write(response)
 }
 
+func writeResponseRequest(requests []config.ServiceRequest, w http.ResponseWriter) {
+	response, err := json.Marshal(requests)
+	if err != nil {
+		http.Error(w, "can not marshal response", http.StatusBadGateway)
+		return
+	}
+	w.WriteHeader(200)
+	w.Write(response)
+}
+
 func writeResponseToken(token config.Auth, w http.ResponseWriter) {
 	response, err := json.Marshal(token)
 	if err != nil {
